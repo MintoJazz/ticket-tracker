@@ -1,51 +1,66 @@
-from flask import Blueprint, jsonify, request
-from psycopg2 import connect, sql
+from flask import Blueprint, render_template, request, redirect, url_for
+from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
-
 from config import DB_URL
 from persistencias import DAO
 
 bp = Blueprint('tickets', __name__)
 
-@bp.route('/servico/<id>')
-def get_prioridade(id):
-    payload = {}
+@bp.route('/servico/')
+def lista_servicos():
     with connect(DB_URL) as connection:
         ticketDAO = DAO('tickets')
-        payload['ticket'] = ticketDAO.select_by_key(connection, 'id', id)
+        todos_tickets = ticketDAO.select_all(connection)
+        
+    return render_template('ticket-list.html', tickets=todos_tickets)
 
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = sql.SQL("SELECT * FROM get_prioridade(%s)")
-            cursor.execute(query, (id, ))
+@bp.route('/servico/<int:id>')
+def perfil_servico(id):
+    with connect(DB_URL) as connection:
+        ticketDAO = DAO('tickets')
+        ticket = ticketDAO.select_by_key(connection, 'id', id)
+        
+        if not ticket: 
+            return redirect(url_for('tickets.lista_servicos'))
 
-            payload['prioridade'] = cursor.fetchall()
-
-    return jsonify(payload)
-    
-@bp.route("/status", methods=['POST'])
-def set_status():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Corpo da requisição deve ser um JSON válido."}), 400
-
-    ticket_id = data.get('ticket_id')
-    user_id = data.get('user_id')
-    message = data.get('message')
-
-    if not ticket_id or not user_id or not message:
-        return jsonify({
-            "error": "Os campos 'ticket_id', 'user_id' e 'message' são obrigatórios."
-        }), 400
-
-    try:
-        with connect(DB_URL) as connection:
-            with connection.cursor() as cursor:
-                query = sql.SQL("CALL set_worklog(%s, %s, %s)")
-                cursor.execute(query, (ticket_id, user_id, message))
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT get_prioridade(%s)", (id,))
+            resultado = cursor.fetchone()
+            prioridade = resultado[0] if resultado else 'Não Definida'
             
-            connection.commit()
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+            query_worklogs = """
+                SELECT w.*, u.name as user_name 
+                FROM worklogs w 
+                JOIN users u ON w.user_id = u.id 
+                WHERE w.ticket_id = %s 
+                ORDER BY w.begun_at DESC
+            """
+            cursor.execute(query_worklogs, (id,))
+            historico = cursor.fetchall()
 
-        return jsonify({"message": "Worklog registrado com sucesso!"}), 201
+    return render_template('ticket-profile.html', ticket=ticket, prioridade=prioridade, historico=historico)
 
-    except Exception as e:
-        return jsonify({"error": f"Erro interno do servidor: {str(e)}"}), 500
+@bp.route("/servico/<int:ticket_id>/worklog", methods=['GET', 'POST'])
+def registrar_worklog(ticket_id):
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        mensagem = request.form.get('mensagem')
+
+        try:
+            with connect(DB_URL) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("CALL set_worklog(%s, %s, %s)", (ticket_id, user_id, mensagem))
+                connection.commit()
+            
+            return redirect(url_for('tickets.perfil_servico', id=ticket_id))
+            
+        except Exception as e: 
+            return f"Erro ao registrar worklog: {e}", 500
+            
+    with connect(DB_URL) as connection:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute("SELECT id, name FROM users ORDER BY name")
+            tecnicos = cursor.fetchall()
+            
+    return render_template('worklog-form.html', ticket_id=ticket_id, tecnicos=tecnicos)

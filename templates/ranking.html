@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="ranking-container">
+    <h1 class="ranking-title">Ranking de Técnicos</h1>
+    
+    <div class="ranking-list">
+        {% for tecnico in ranking %}
+        <div class="card ranking-card">
+            
+            <div class="ranking-card-left">
+                <span class="ranking-position {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% else %}rank-other{% endif %}">
+                    #{{ loop.index }}
+                </span>
+                
+                <span class="ranking-name">
+                    {{ tecnico.name }}
+                </span>
+            </div>
+
+            <div class="ranking-card-right">
+                <span class="ranking-score">
+                    {{ tecnico.worklogs_count }}
+                </span>
+                <span class="ranking-label">
+                    Finalizados
+                </span>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,24 +1,15 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, render_template
 from psycopg2 import connect, sql
 from psycopg2.extras import RealDictCursor
-
 from config import DB_URL
-from persistencias import DAO
 
 bp = Blueprint('dashboard', __name__)
 
-@bp.route('/') 
+@bp.route('/')
 def dashboard():
-    payload = {}
-
     with connect(DB_URL) as connection:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = sql.SQL("SELECT * FROM get_dashboard()")
-            cursor.execute(query)
-
-            payload['dashboard'] = cursor.fetchall()
-
-        worklogDAO = DAO('worklogs')
-        payload['worklogs'] = worklogDAO.select_all(connection=connection)
-
-    return jsonify(payload)
+            cursor.execute(sql.SQL("SELECT * FROM get_dashboard()"))
+            dados_dashboard = cursor.fetchone()
+    
+    return render_template('dashboard.html', dashboard=dados_dashboard)

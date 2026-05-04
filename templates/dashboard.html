@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Dashboard do Sistema</h1>
+<div class="grid">
+    <div class="card">
+        <h3>Total de Serviços</h3>
+        <p class="card-value">{{ dashboard.total_tickets }}</p>
+    </div>
+    <div class="card">
+        <h3>Abertos</h3>
+        <p class="card-value">{{ dashboard.open_tickets }}</p>
+    </div>
+    <div class="card">
+        <h3>Finalizados</h3>
+        <p class="card-value">{{ dashboard.finished_tickets }}</p>
+    </div>
+    <div class="card">
+        <h3>Tempo Médio</h3>
+        <p class="card-value">{{ dashboard.avg_worklog_time_hours }}h</p>
+    </div>
+</div>
+{% endblock %}1
