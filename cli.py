@@ -25,7 +25,7 @@ def db_push(force):
         click.secho("❌ Erro: A variável DB_URL não foi encontrada no arquivo .env", fg="red")
         return
 
-    if not force: click.confirm('⚠️ Isso vai APAGAR todas as tabelas e dados do seu banco atual. Continuar?', abort=True)
+    if not force: click.confirm('⚠️ Isso vai APAGAR todas as tabelas e dados do seu banco atual. Continuar?', abort=True)  # noqa: E701
 
     click.echo("========================================")
     click.echo("Sincronizando Banco de Dados (Reset de Schema)")
@@ -42,7 +42,7 @@ def db_push(force):
         
     except psycopg2.OperationalError as e:
         if "does not exist" in str(e):
-            click.secho(f"\n❌ Erro: O banco de dados alvo não foi encontrado.", fg="red", bold=True)
+            click.secho("\n❌ Erro: O banco de dados alvo não foi encontrado.", fg="red", bold=True)
             click.secho("Crie um banco de dados vazio no seu PostgreSQL (ex: CREATE DATABASE ticket_tracker;) antes de rodar este comando.", fg="yellow")
         else:
             click.secho(f"\n❌ Falha na conexão: {e}", fg="red")
@@ -54,8 +54,9 @@ def db_push(force):
         sql_files = []
         base_dir = "database"
 
-        for root, _, files in os.walk(base_dir): for file in files:
-            if file.endswith('.sql'): sql_files.append(os.path.join(root, file))
+        for root, _, files in os.walk(base_dir): 
+            for file in files:
+                if file.endswith('.sql') and file != 'dump.sql': sql_files.append(os.path.join(root, file))  # noqa: E701
 
         sql_files.sort(key=lambda filepath: os.path.basename(filepath))
         
@@ -64,7 +65,7 @@ def db_push(force):
             return
 
         cursor.execute("BEGIN;")
-        for filepath in sql_files: execute_sql_file(cursor, filepath)
+        for filepath in sql_files: execute_sql_file(cursor, filepath)  # noqa: E701
         
         conn.commit()
         cursor.close()
