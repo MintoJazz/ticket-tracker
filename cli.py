@@ -31,6 +31,7 @@ def db_push(force):
     click.echo("Sincronizando Banco de Dados (Reset de Schema)")
     click.echo("========================================")
     
+    # Conexão 1: autocommit obrigatório para DROP/CREATE SCHEMA (não podem rodar dentro de transação)
     try:
         conn = psycopg2.connect(DB_URL)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -39,6 +40,8 @@ def db_push(force):
         click.secho("1. Limpando tabelas, funções e enums antigos...", fg="cyan")
         cursor.execute("DROP SCHEMA public CASCADE;")
         cursor.execute("CREATE SCHEMA public;")
+        cursor.close()
+        conn.close()
         
     except psycopg2.OperationalError as e:
         if "does not exist" in str(e):
@@ -48,6 +51,9 @@ def db_push(force):
             click.secho(f"\n❌ Falha na conexão: {e}", fg="red")
         return
 
+    # Conexão 2: transação normal para aplicar os arquivos SQL
+    conn2 = None
+    filepath = None
     try:
         click.secho("\n2. Coletando e aplicando arquivos SQL:", fg="cyan")
         
@@ -64,17 +70,20 @@ def db_push(force):
             click.secho("Nenhum arquivo .sql encontrado na pasta database/ e subpastas.", fg="yellow")
             return
 
-        cursor.execute("BEGIN;")
-        for filepath in sql_files: execute_sql_file(cursor, filepath)  # noqa: E701
+        conn2 = psycopg2.connect(DB_URL)
+        cursor2 = conn2.cursor()
+
+        for filepath in sql_files: execute_sql_file(cursor2, filepath)  # noqa: E701
         
-        conn.commit()
-        cursor.close()
-        conn.close()
+        conn2.commit()
+        cursor2.close()
+        conn2.close()
         
         click.secho("\n✨ Sincronização concluída com sucesso! Banco pronto.", fg="green", bold=True)
 
     except Exception as e:
-        conn.rollback() 
-        failed_file = os.path.basename(filepath) if 'filepath' in locals() else 'Desconhecido'
+        if conn2:
+            conn2.rollback()
+        failed_file = os.path.basename(filepath) if filepath else 'Desconhecido'
         click.secho(f"\n❌ Falha na execução. O processo estourou no arquivo: {failed_file}", fg="red", bold=True)
         click.secho(f"Detalhe do erro: {e}", fg="red")
