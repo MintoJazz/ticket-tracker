@@ -25,6 +25,23 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--> Procedure do Trigger com Regras de Negócio Avançadas - Regra de Concorrência de Worklog
+CREATE OR REPLACE FUNCTION block_concurrent_worklogs() RETURNS trigger AS $$
+DECLARE
+    open_logs INT;
+BEGIN
+    SELECT COUNT(*) INTO open_logs
+    FROM worklogs
+    WHERE user_id = NEW.user_id AND ended_at IS NULL;
+
+    IF open_logs > 0 THEN
+        RAISE EXCEPTION 'Regra de Negócio: O técnico já possui um worklog em andamento. Finalize-o antes de registrar um novo.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 --> Trigger de Automatização de Serviços - Máquina de Estados para Status de Tickets
 CREATE OR REPLACE FUNCTION automate_ticket_status() RETURNS trigger AS $$
 DECLARE

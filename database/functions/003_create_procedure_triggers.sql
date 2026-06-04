@@ -1,3 +1,8 @@
+--> Trigger com Regras de Negócio Avançadas - Regra de Concorrência de Worklog
+CREATE TRIGGER trg_block_concurrent_worklog
+BEFORE INSERT ON worklogs
+FOR EACH ROW EXECUTE FUNCTION block_concurrent_worklogs();
+
 --> Trigger de Auditoria - Tickets
 CREATE TRIGGER trg_audit_tickets
 AFTER INSERT OR UPDATE OR DELETE ON tickets
