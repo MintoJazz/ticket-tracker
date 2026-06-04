@@ -1,18 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-<div style="max-width: 500px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
-        <a href="{{ url_for('tickets.perfil_servico', id=ticket_id) }}" class="btn" style="background-color: var(--muted); border: 1px solid var(--border);">
+<div class="content-narrow">
+    <div class="page-header">
+        <a href="{{ url_for('tickets.perfil_servico', ticket_id=ticket_id) }}" class="btn btn-outline btn-sm">
             ← Cancelar
         </a>
-        <h1 style="margin: 0;">Registrar Worklog</h1>
+        <h1>Registrar Worklog</h1>
     </div>
-
-    <p style="color: var(--muted-foreground); font-size: 0.875rem; margin-bottom: 2rem;">
+    <p class="form-hint">
         Adicionando um novo registro ao chamado <strong>#{{ ticket_id }}</strong>.<br>
         Dica: Digite 'resolvido' na mensagem para finalizar o chamado automaticamente.
     </p>
-
     <form method="POST">
         <div class="form-group">
             <label>Técnico Responsável</label>
@@ -23,13 +21,11 @@
                 {% endfor %}
             </select>
         </div>
-        
         <div class="form-group">
             <label>Mensagem / Descrição do Serviço</label>
             <textarea name="mensagem" rows="5" placeholder="Descreva os procedimentos realizados..." required></textarea>
         </div>
-        
-        <button type="submit" class="btn btn-primary" style="width: 100%;">
+        <button type="submit" class="btn btn-primary btn-full">
             Salvar Worklog
         </button>
     </form>

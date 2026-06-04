@@ -1,28 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="ranking-container">
-    <h1 class="ranking-title">Ranking de Técnicos</h1>
-    
+    <h1 class="page-title">Ranking de Técnicos</h1>
+
     <div class="ranking-list">
         {% for tecnico in ranking %}
         <div class="card ranking-card">
-            
+
             <div class="ranking-card-left">
-                <span class="ranking-position {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% else %}rank-other{% endif %}">
+                <span class="ranking-position">
                     #{{ loop.index }}
                 </span>
-                
-                <span class="ranking-name">
-                    {{ tecnico.name }}
-                </span>
+
+                <div class="ranking-info">
+                    <span class="ranking-name">
+                        {{ tecnico.name }}
+                    </span>
+                    {% if tecnico.workspace_names %}
+                    <span class="ranking-workspace">
+                        {{ tecnico.workspace_names }}
+                    </span>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="ranking-card-right">
-                <span class="ranking-score">
-                    {{ tecnico.worklogs_count }}
-                </span>
                 <span class="ranking-label">
                     Finalizados
+                </span>
+                <span class="ranking-score">
+                    {{ tecnico.worklogs_count }}
                 </span>
             </div>
 

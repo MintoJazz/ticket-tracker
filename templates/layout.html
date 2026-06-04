@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicketTracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
     <div class="app-layout">
-        <!-- Barra Lateral -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>TicketTracker</h2>
@@ -20,10 +22,38 @@
             </nav>
         </aside>
 
-        <!-- Conteúdo Principal -->
         <main class="main-content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div id="toast-container" class="toast-container">
+                {% for category, message in messages %}
+                <div class="toast-message {{ 'toast-error' if category == 'error' else 'toast-success' }}">
+                    <span>{{ message }}</span>
+                    <button class="toast-close" onclick="fecharToast(this.parentElement)">&times;</button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <script>
+                // Função para fechar manualmente com animação
+                function fecharToast(elemento) {
+                    elemento.style.animation = 'slideOutRight 0.3s ease forwards';
+                    setTimeout(() => elemento.remove(), 300);
+                }
+
+                // Auto-remover os toasts após 4.5 segundos
+                setTimeout(() => {
+                    const toasts = document.querySelectorAll('.toast-message');
+                    toasts.forEach(toast => fecharToast(toast));
+                }, 4500);
+            </script>
+            {% endif %}
+            {% endwith %}
+
             {% block content %}{% endblock %}
         </main>
     </div>
 </body>
+
 </html>

@@ -1,27 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="ranking-container" style="max-width: 800px;">
-    <h1 class="ranking-title">Lista de Serviços</h1>
-    
-    <div class="ranking-list">
+<div class="ticket-list-container">
+    <h1 class="page-title">Lista de Serviços</h1>
+
+    <div class="ticket-list">
         {% for ticket in tickets %}
-        <a href="{{ url_for('tickets.perfil_servico', id=ticket.id) }}" style="text-decoration: none; color: inherit;">
-            <div class="card ranking-card">
-                <div class="ranking-card-left">
-                    <span class="ranking-position" style="font-size: 1rem; color: var(--muted-foreground);">
-                        #{{ ticket.id }}
-                    </span>
-                    <span class="ranking-name">
-                        {{ ticket.title }}
-                    </span>
+        <a href="{{ url_for('tickets.perfil_servico', ticket_id=ticket.id) }}" class="ticket-link">
+            <div class="card ticket-item">
+                <div class="ticket-item-left">
+                    <span class="ticket-id">#{{ ticket.id }}</span>
+                    <span class="ranking-name">{{ ticket.title }}</span>
                 </div>
-                <div class="ranking-card-right">
-                    <span class="badge">{{ ticket.status }}</span>
+                <div class="ticket-item-right">
+                    <span class="badge badge-secondary">{{ ticket.workspace_name }}</span>
+                    <span class="badge-outline badge">{{ ticket.status }}</span>
                 </div>
             </div>
         </a>
         {% else %}
-        <p style="text-align: center; color: var(--muted-foreground);">Nenhum serviço encontrado.</p>
+        <p class="text-empty">Nenhum serviço encontrado.</p>
         {% endfor %}
     </div>
 </div>

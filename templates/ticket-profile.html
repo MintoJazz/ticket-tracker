@@ -1,62 +1,73 @@
 {% extends "layout.html" %}
 {% block content %}
-<div style="max-width: 600px; margin: 0 auto;">
-    
-    <!-- Header com Botão Menor -->
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
-        <a href="{{ url_for('tickets.lista_servicos') }}" class="btn" style="background-color: var(--muted); border: 1px solid var(--border); height: 2rem; padding: 0 0.75rem; font-size: 0.8rem;">
+<div class="content-narrow">
+
+    <!-- Header com botão de voltar -->
+    <div class="page-header">
+        <a href="{{ url_for('tickets.lista_servicos') }}" class="btn btn-outline btn-sm">
             ← Voltar
         </a>
-        <h1 style="margin: 0;">Detalhes do Serviço</h1>
+        <h1>Detalhes do Serviço</h1>
     </div>
 
-    <div class="card" style="margin-bottom: 1.5rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-            <div>
-                <span style="font-size: 0.875rem; color: var(--muted-foreground);">Ticket #{{ ticket.id }}</span>
-                <h2 style="margin-top: 0.25rem;">{{ ticket.title }}</h2>
+    <div class="card card-padded mb-lg">
+        <div class="ticket-header">
+            <div class="ticket-meta">
+                <span>Ticket #{{ ticket.id }}</span>
+                <span class="badge badge-secondary">{{ ticket.workspace_name }}</span>
+                <h2>{{ ticket.title }}</h2>
             </div>
-            
-            <!-- Badges lado a lado e com tamanhos iguais -->
-            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-                <span class="badge" style="background-color: transparent;">
+
+            <!-- Badges de status e prioridade -->
+            <div class="ticket-badges">
+                <span class="badge badge-outline">
                     Status: {{ ticket.status }}
                 </span>
-                <span class="badge" style="background-color: var(--primary); color: var(--primary-foreground);">
+                <span class="badge badge-primary">
                     Prioridade: {{ prioridade }}
                 </span>
             </div>
         </div>
-        
-        <div style="padding: 1rem; background-color: var(--muted); border-radius: var(--radius); margin-bottom: 2rem;">
-            <p style="font-size: 0.95rem; line-height: 1.6;">
-                {{ ticket.description }}
-            </p>
+
+        <div class="ticket-description">
+            <p>{{ ticket.description }}</p>
         </div>
 
         <!-- Seção do Histórico -->
-        <h3 style="margin-bottom: 1rem;">Histórico de Atendimento</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+        <h3 class="section-title">Histórico de Atendimento</h3>
+        <div class="timeline">
             {% for log in historico %}
-            <div style="border-left: 2px solid var(--border); padding-left: 1rem; margin-left: 0.5rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                    <span style="font-weight: 600; font-size: 0.875rem;">{{ log.user_name }}</span>
-                    <span style="font-size: 0.75rem; color: var(--muted-foreground);">
-                        {{ log.begun_at.strftime('%d/%m/%Y às %H:%M') if log.begun_at else '' }}
-                    </span>
+            <div class="timeline-item">
+                <div class="timeline-row">
+                    <span class="timeline-author">{{ log.user_name }}</span>
+
+                    <div class="timeline-actions">
+                        <span class="timeline-date">
+                            {{ log.begun_at.strftime('%d/%m/%Y às %H:%M') if log.begun_at else '' }}
+                            {% if log.ended_at %} - Finalizado {% endif %}
+                        </span>
+
+                        {% if not log.ended_at %}
+                        <form action="{{ url_for('worklogs.encerrar', log_id=log.id) }}" method="POST"
+                            class="timeline-form">
+                            <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
+                            <button type="submit" class="btn btn-warning-sm">
+                                Finalizar Tarefa
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
                 </div>
-                <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                    {{ log.message }}
-                </p>
+                <p class="timeline-message">{{ log.message }}</p>
             </div>
             {% else %}
-            <p style="font-size: 0.875rem; color: var(--muted-foreground); text-align: center; font-style: italic;">
+            <p class="text-empty">
                 Nenhum worklog registrado ainda.
             </p>
             {% endfor %}
         </div>
 
-        <a href="{{ url_for('tickets.registrar_worklog', ticket_id=ticket.id) }}" class="btn btn-primary" style="width: 100%;">
+        <a href="{{ url_for('worklogs.exibir_form', ticket_id=ticket.id) }}" class="btn btn-primary btn-full">
             + Adicionar Worklog
         </a>
     </div>
