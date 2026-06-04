@@ -24,3 +24,24 @@ BEGIN
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
+
+--> Trigger de Automatização de Serviços - Máquina de Estados para Status de Tickets
+CREATE OR REPLACE FUNCTION automate_ticket_status() RETURNS trigger AS $$
+DECLARE
+    current_status status_registry;
+BEGIN
+    SELECT status INTO current_status FROM tickets WHERE id = NEW.ticket_id;
+
+    IF NEW.message ILIKE '%resolvido%' THEN
+        UPDATE tickets SET status = 'FINALIZADO' WHERE id = NEW.ticket_id;
+        
+    ELSIF current_status IN ('FINALIZADO', 'CANCELADO') THEN
+        CALL reopen_ticket(NEW.ticket_id);
+
+    ELSIF current_status = 'AGUARDANDO ATENDIMENTO' THEN
+        UPDATE tickets SET status = 'EM ATENDIMENTO' WHERE id = NEW.ticket_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
