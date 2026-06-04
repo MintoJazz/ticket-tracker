@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, request
-from psycopg2 import connect, sql
+from flask import Blueprint, jsonify
+from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 
 from config import DB_URL
@@ -7,45 +7,47 @@ from persistencias import DAO
 
 bp = Blueprint('tickets', __name__)
 
-@bp.route('/servico/<id>')
-def get_prioridade(id):
-    payload = {}
+@bp.route('/')
+def lista_servicos():
     with connect(DB_URL) as connection:
-        ticketDAO = DAO('tickets')
-        payload['ticket'] = ticketDAO.select_by_key(connection, 'id', id)
-
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = sql.SQL("SELECT * FROM get_prioridade(%s)")
-            cursor.execute(query, (id, ))
+            cursor.execute("""
+                SELECT t.*, ws.name as workspace_name 
+                FROM tickets t
+                LEFT JOIN workspaces ws ON t.workspace_id = ws.id
+                ORDER BY t.id
+            """)
+            todos_tickets = cursor.fetchall()
+    return jsonify({"tickets": todos_tickets})
 
-            payload['prioridade'] = cursor.fetchall()
+@bp.route('/<int:ticket_id>')
+def perfil_servico(ticket_id):
+    with connect(DB_URL) as connection:
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute("""
+                SELECT t.*, ws.name as workspace_name 
+                FROM tickets t
+                LEFT JOIN workspaces ws ON t.workspace_id = ws.id
+                WHERE t.id = %s
+            """, (ticket_id,))
+            ticket = cursor.fetchone()
 
-    return jsonify(payload)
-    
-@bp.route("/status", methods=['POST'])
-def set_status():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "Corpo da requisição deve ser um JSON válido."}), 400
-
-    ticket_id = data.get('ticket_id')
-    user_id = data.get('user_id')
-    message = data.get('message')
-
-    if not ticket_id or not user_id or not message:
-        return jsonify({
-            "error": "Os campos 'ticket_id', 'user_id' e 'message' são obrigatórios."
-        }), 400
-
-    try:
-        with connect(DB_URL) as connection:
-            with connection.cursor() as cursor:
-                query = sql.SQL("CALL set_worklog(%s, %s, %s)")
-                cursor.execute(query, (ticket_id, user_id, message))
+        if not ticket: 
+            return jsonify({"error": "Ticket não encontrado."}), 404
             
-            connection.commit()
-
-        return jsonify({"message": "Worklog registrado com sucesso!"}), 201
-
-    except Exception as e:
-        return jsonify({"error": f"Erro interno do servidor: {str(e)}"}), 500
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT get_prioridade(%s)", (ticket_id,))
+            resultado = cursor.fetchone()
+            prioridade = resultado[0] if resultado else 'Não Definida'
+            
+        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+            cursor.execute("""
+                SELECT w.*, u.name as user_name 
+                FROM worklogs w 
+                JOIN users u ON w.user_id = u.id 
+                WHERE w.ticket_id = %s 
+                ORDER BY w.begun_at DESC
+            """, (ticket_id,))
+            historico = cursor.fetchall()
+            
+    return jsonify({"ticket": ticket, "prioridade": prioridade, "historico": historico})
