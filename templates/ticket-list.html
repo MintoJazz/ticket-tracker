@@ -15,12 +15,11 @@
                 <th>ID</th>
                 <th style="width: 100%;">Título</th>
                 <th>Status</th>
-                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for ticket in tickets %}
-            <tr>
+            <tr onclick="window.location.href='{{ url_for('tickets.perfil_servico', ticket_id=ticket.id) }}'" class="tt-clickable-row">
                 <td class="tt-text-muted">#{{ ticket.id }}</td>
                 <td class="tt-font-medium">{{ ticket.title }}</td>
                 <td>
@@ -38,16 +37,19 @@
                         <span class="tt-badge">{{ ticket.status }}</span>
                     {% endif %}
                 </td>
-                <td>
-                    <a class="tt-btn tt-btn--ghost tt-btn--sm" href="{{ url_for('tickets.perfil_servico', ticket_id=ticket.id) }}">Ver Detalhes</a>
-                </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="4" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum ticket encontrado.</td>
+                <td colspan="3" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum ticket encontrado.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<style>
+    .tt-clickable-row {
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
