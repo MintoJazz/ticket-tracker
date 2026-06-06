@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, session
 from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 from config import DB_URL
@@ -8,15 +8,13 @@ bp = Blueprint('tickets', __name__)
 
 @bp.route('/')
 def lista_servicos():
+    if 'workspace_id' not in session:
+        return redirect(url_for('workspaces.selecionar'))
+
     with connect(DB_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute("""
-                SELECT t.*, ws.name as workspace_name 
-                FROM tickets t
-                LEFT JOIN workspaces ws ON t.workspace_id = ws.id
-                ORDER BY t.id
-            """)
-            todos_tickets = cursor.fetchall()
+        ticketDAO = DAO('tickets')
+        todos_tickets = ticketDAO.select_many_by_key(connection, 'workspace_id', session['workspace_id'])
+
     return render_template('ticket-list.html', tickets=todos_tickets)
 
 @bp.route('/<int:ticket_id>')
