@@ -1,33 +1,43 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<div class="content-narrow">
-    <div class="page-header">
-        <a href="{{ url_for('tickets.perfil_servico', ticket_id=ticket_id) }}" class="btn btn-outline btn-sm">
-            ← Cancelar
-        </a>
-        <h1>Registrar Worklog</h1>
+<div class="tt-mb-6 tt-flex tt-items-center tt-gap-4">
+    <a href="{{ url_for('tickets.perfil_servico', ticket_id=ticket_id) }}" class="tt-btn tt-btn--ghost tt-btn--sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Voltar
+    </a>
+</div>
+
+<div class="tt-card" style="max-width: 560px; margin: 0 auto;">
+    <div class="tt-card__header">
+        <h2 class="tt-card__title">Novo Registro de Worklog</h2>
+        <span class="tt-card__desc">Adicione um novo atendimento ao Ticket #{{ ticket_id }}</span>
     </div>
-    <p class="form-hint">
-        Adicionando um novo registro ao chamado <strong>#{{ ticket_id }}</strong>.<br>
-        Dica: Digite 'resolvido' na mensagem para finalizar o chamado automaticamente.
-    </p>
-    <form method="POST">
-        <div class="form-group">
-            <label>Técnico Responsável</label>
-            <select name="user_id" required autofocus>
-                <option value="" disabled selected>Selecione seu usuário...</option>
-                {% for tecnico in tecnicos %}
-                <option value="{{ tecnico.id }}">{{ tecnico.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Mensagem / Descrição do Serviço</label>
-            <textarea name="mensagem" rows="5" placeholder="Descreva os procedimentos realizados..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary btn-full">
-            Salvar Worklog
-        </button>
-    </form>
+    
+    <div class="tt-card__content">
+        <form method="POST" action="{{ url_for('worklogs.processar_form', ticket_id=ticket_id) }}" id="worklogForm">
+            
+            <div class="tt-form-group">
+                <label class="tt-label" for="user_id">Técnico Responsável</label>
+                <select name="user_id" id="user_id" class="tt-select" required>
+                    <option value="" disabled selected>Selecione um técnico...</option>
+                    {% for t in tecnicos %}
+                        <option value="{{ t.id }}">{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="tt-form-group">
+                <label class="tt-label" for="mensagem">Mensagem / Relato</label>
+                <textarea name="mensagem" id="mensagem" class="tt-textarea" placeholder="Descreva os procedimentos realizados. Utilize a palavra 'resolvido' para finalizar o ticket automaticamente." required></textarea>
+            </div>
+            
+        </form>
+    </div>
+    
+    <div class="tt-card__footer">
+        <a href="{{ url_for('tickets.perfil_servico', ticket_id=ticket_id) }}" class="tt-btn tt-btn--ghost">Cancelar</a>
+        <button type="submit" form="worklogForm" class="tt-btn tt-btn--primary">Salvar Registro</button>
+    </div>
 </div>
 {% endblock %}
