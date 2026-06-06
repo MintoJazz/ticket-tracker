@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecionar Setor - TicketTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="tt-auth-shell">
+    <div style="width: 100%; max-width: 520px; padding: 24px;">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px;">
+                    {% for category, message in messages %}
+                        <div class="tt-toast {% if category == 'success' %}tt-toast--success{% elif category == 'error' %}tt-toast--error{% endif %}" style="position: static; animation: none; max-width: none;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="tt-ws-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            TicketTracker
+        </div>
+
+        <div class="tt-card" style="padding: 2rem;">
+            <h1 class="tt-ws-title">Selecione um setor</h1>
+            <p class="tt-ws-subtitle">Escolha o setor para continuar.</p>
+
+            <form method="POST" action="{{ url_for('workspaces.selecionar') }}" style="margin-top: 24px;">
+                <div class="tt-ws-list">
+                    {% for w in workspaces %}
+                    <label class="tt-ws-option">
+                        <input type="radio" name="workspace_id" value="{{ w.id }}" required class="tt-ws-option__radio">
+                        <div class="tt-ws-option__content">
+                            <div class="tt-ws-option__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+                            </div>
+                            <span class="tt-ws-option__name">{{ w.name }}</span>
+                            <div class="tt-ws-option__check">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="tt-btn tt-btn--primary tt-btn--block" style="margin-top: 1.5rem;">
+                    Continuar
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

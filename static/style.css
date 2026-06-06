@@ -7,39 +7,28 @@
 :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
-    
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
-    
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    
     --primary: 173 80% 36%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 173 83% 30%;
-    
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
-    
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    
     --accent: 173 80% 36%;
     --accent-foreground: 0 0% 100%;
-    
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    
     --success: 142 71% 45%;
     --warning: 38 92% 50%;
     --info: 199 89% 48%;
-    
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 173 80% 36%;
-    
     --radius: 0.5rem;
-    
     --shadow-sm: 0 1px 2px 0 hsl(240 5% 10% / 0.05);
     --shadow: 0 1px 3px 0 hsl(240 5% 10% / 0.07), 0 1px 2px -1px hsl(240 5% 10% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(240 5% 10% / 0.08), 0 2px 4px -2px hsl(240 5% 10% / 0.05);
@@ -48,29 +37,21 @@
 .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    
     --card: 240 6% 10%;
     --card-foreground: 0 0% 98%;
-    
     --popover: 240 6% 10%;
     --popover-foreground: 0 0% 98%;
-    
     --primary: 172 66% 50%;
     --primary-foreground: 240 10% 3.9%;
     --primary-hover: 173 80% 40%;
-    
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
-    
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    
     --accent: 172 66% 50%;
     --accent-foreground: 240 10% 3.9%;
-    
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 98%;
-    
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 172 66% 50%;
@@ -289,6 +270,10 @@ h3 { font-size: 20px; }
 }
 .tt-btn--destructive:hover:not(:disabled) { filter: brightness(0.9); }
 
+.tt-btn--block {
+    width: 100%;
+}
+
 /* Badges */
 .tt-badge {
     display: inline-flex;
@@ -477,4 +462,171 @@ h3 { font-size: 20px; }
 
 @media (max-width: 480px) {
     .tt-grid-dashboard { grid-template-columns: 1fr; }
+}
+
+/* --- 7. WORKSPACE SELECTOR & AUTH SHELL --- */
+.tt-auth-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: hsl(var(--background));
+    padding: 16px;
+}
+
+.tt-ws-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+}
+
+.tt-ws-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.tt-ws-subtitle {
+    font-size: 14px;
+    color: hsl(var(--muted-foreground));
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.tt-ws-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tt-ws-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.tt-ws-option__radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.tt-ws-option__content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
+    background-color: transparent;
+}
+
+.tt-ws-option__icon {
+    color: hsl(var(--muted-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tt-ws-option__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    flex: 1;
+}
+
+.tt-ws-option__check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid hsl(var(--border));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: all 0.15s ease;
+}
+
+.tt-ws-option:hover .tt-ws-option__content {
+    background-color: hsl(var(--secondary));
+    border-color: hsl(var(--input));
+}
+
+.tt-ws-option__radio:checked + .tt-ws-option__content {
+    border-color: hsl(var(--primary));
+    background-color: color-mix(in oklab, hsl(var(--primary)) 6%, transparent);
+}
+
+.tt-ws-option__radio:checked + .tt-ws-option__content .tt-ws-option__check {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+.tt-ws-option__radio:checked + .tt-ws-option__content .tt-ws-option__icon {
+    color: hsl(var(--primary));
+}
+
+/* --- 8. SIDEBAR WORKSPACE SWITCHER --- */
+.tt-sidebar__footer {
+    margin-top: auto;
+    border-top: 1px solid hsl(var(--border));
+    padding: 16px;
+}
+
+.tt-ws-switcher {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.tt-ws-switcher:hover {
+    background-color: hsl(var(--secondary));
+}
+
+.tt-ws-switcher__label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+}
+
+.tt-ws-switcher__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.tt-ws-switcher__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tt-ws-switcher__icon {
+    color: hsl(var(--muted-foreground));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
 }

@@ -13,8 +13,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Título</th>
-                <th>Workspace</th>
+                <th style="width: 100%;">Título</th>
                 <th>Status</th>
                 <th>Ações</th>
             </tr>
@@ -24,7 +23,6 @@
             <tr>
                 <td class="tt-text-muted">#{{ ticket.id }}</td>
                 <td class="tt-font-medium">{{ ticket.title }}</td>
-                <td>{{ ticket.workspace_name }}</td>
                 <td>
                     {% if ticket.status == 'FINALIZADO' %}
                         <span class="tt-badge tt-badge--status-finalizado">{{ ticket.status }}</span>
@@ -46,7 +44,7 @@
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum ticket encontrado.</td>
+                <td colspan="4" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum ticket encontrado.</td>
             </tr>
             {% endfor %}
         </tbody>
