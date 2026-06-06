@@ -1,802 +1,480 @@
 /* ==========================================================================
-   TicketTracker — Design System (Shadcn UI · Zinc · New York)
-   Pure CSS implementation without Tailwind or any framework.
-   ========================================================================== */
+   TicketTracker — Design System (Shadcn UI · Zinc/Teal · New York)
+   Implementação em CSS puro (Sem Tailwind).
+========================================================================== */
 
-
-/* ==========================================================================
-   1. THEME VARIABLES
-   Mapped 1:1 from Shadcn UI's Zinc palette (light mode).
-   HSL values sourced from: https://ui.shadcn.com/themes
-   ========================================================================== */
-
+/* --- 1. TOKENS --- */
 :root {
-    /* --- Core Palette (Zinc · Light) --- */
-    --background:            0 0% 100%;
-    --foreground:            240 10% 3.9%;
-
-    --card:                  0 0% 100%;
-    --card-foreground:       240 10% 3.9%;
-
-    --popover:               0 0% 100%;
-    --popover-foreground:    240 10% 3.9%;
-
-    --primary:               240 5.9% 10%;
-    --primary-foreground:    0 0% 98%;
-
-    --secondary:             240 4.8% 95.9%;
-    --secondary-foreground:  240 5.9% 10%;
-
-    --muted:                 240 4.8% 95.9%;
-    --muted-foreground:      240 3.8% 46.1%;
-
-    --accent:                240 4.8% 95.9%;
-    --accent-foreground:     240 5.9% 10%;
-
-    --destructive:           0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border:                240 5.9% 90%;
-    --input:                 240 5.9% 90%;
-    --ring:                  240 5.9% 10%;
-
-    /* --- Radius (New York) --- */
-    --radius:                0.5rem;
-
-    /* --- Sidebar (dark panel) --- */
-    --sidebar-bg:            240 5.9% 10%;
-    --sidebar-fg:            240 4.8% 95.9%;
-    --sidebar-muted:         240 3.8% 46.1%;
-    --sidebar-hover:         240 5.2% 18%;
-    --sidebar-active:        0 0% 100%;
-    --sidebar-border:        240 5.2% 22%;
-    --sidebar-width:         16rem;
-
-    /* --- Chart Colors (optional future use) --- */
-    --chart-1:               12 76% 61%;
-    --chart-2:               173 58% 39%;
-    --chart-3:               197 37% 24%;
-    --chart-4:               43 74% 66%;
-    --chart-5:               27 87% 67%;
-
-    /* --- Shadows --- */
-    --shadow-sm:             0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md:             0 4px 6px -1px rgb(0 0 0 / 0.1),
-                             0 2px 4px -2px rgb(0 0 0 / 0.1);
-
-    /* --- Specific: Toast --- */
-    --toast-success-border:  142.1 76.2% 36.3%;
-    --toast-success-fg:      142.1 76.2% 20%;
-    --toast-error-border:    0 84.2% 60.2%;
-    --toast-error-fg:        0 62.8% 30.6%;
-
-    /* --- Specific: Warn button --- */
-    --warning:               47.9 95.8% 53.1%;
-    --warning-foreground:    26 90% 27%;
-    --warning-border:        47.9 95.8% 60%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --primary: 173 80% 36%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 173 83% 30%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 173 80% 36%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --info: 199 89% 48%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 173 80% 36%;
+    
+    --radius: 0.5rem;
+    
+    --shadow-sm: 0 1px 2px 0 hsl(240 5% 10% / 0.05);
+    --shadow: 0 1px 3px 0 hsl(240 5% 10% / 0.07), 0 1px 2px -1px hsl(240 5% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(240 5% 10% / 0.08), 0 2px 4px -2px hsl(240 5% 10% / 0.05);
 }
 
+.dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    --card: 240 6% 10%;
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 6% 10%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 172 66% 50%;
+    --primary-foreground: 240 10% 3.9%;
+    --primary-hover: 173 80% 40%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 172 66% 50%;
+    --accent-foreground: 240 10% 3.9%;
+    
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 172 66% 50%;
+}
 
-/* ==========================================================================
-   2. RESET & BASE
-   Global reset, typography and selection.
-   ========================================================================== */
-
-*,
-*::before,
-*::after {
+/* --- 2. BASE --- */
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
 body {
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system,
-                 BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-                 Arial, sans-serif;
-    font-size: 0.875rem;               /* 14px — Shadcn default body */
+    font-family: "Inter", "Geist", system-ui, -apple-system, sans-serif;
+    font-size: 14px;
     line-height: 1.5;
-    color: hsl(var(--foreground));
     background-color: hsl(var(--background));
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.025em;          /* tracking-tight */
     color: hsl(var(--foreground));
-    font-weight: 600;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4 {
     line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 600;
 }
 
-h1 { font-size: 1.875rem; font-weight: 700; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.125rem; }
+h1 { font-size: 30px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
 
-a { color: inherit; text-decoration: none; }
-
-::selection {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-}
-
-
-/* ==========================================================================
-   3. LAYOUT
-   App shell: sidebar + main content area.
-   ========================================================================== */
-
-.app-layout {
+/* --- 3. LAYOUT --- */
+.tt-app {
     display: flex;
     min-height: 100vh;
 }
 
-/* --- Sidebar --- */
-.sidebar {
-    width: var(--sidebar-width);
-    background-color: hsl(var(--sidebar-bg));
+.tt-sidebar {
+    width: 260px;
+    background-color: hsl(var(--card));
+    border-right: 1px solid hsl(var(--border));
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 0.75rem;
-    border-right: 1px solid hsl(var(--sidebar-border));
-    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
-.sidebar-header {
-    margin-bottom: 2rem;
-    padding: 0 0.75rem;
-}
-
-.sidebar-header h2 {
-    color: hsl(var(--sidebar-active));
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-}
-
-.sidebar-nav a {
+.tt-sidebar__header {
+    padding: 24px;
+    border-bottom: 1px solid hsl(var(--border));
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
+    gap: 12px;
+}
+
+.tt-sidebar__nav {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tt-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
     border-radius: var(--radius);
-    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    transition: all 0.2s;
     font-weight: 500;
-    color: hsl(var(--sidebar-muted));
-    transition: color 0.15s ease, background-color 0.15s ease;
+    border-left: 3px solid transparent;
 }
 
-.sidebar-nav a:hover {
-    background-color: hsl(var(--sidebar-hover));
-    color: hsl(var(--sidebar-active));
+.tt-nav-link:hover {
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--foreground));
 }
 
-/* --- Main Content --- */
-.main-content {
+.tt-nav-link.active {
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-left-color: hsl(var(--primary));
+}
+
+.tt-main {
     flex: 1;
-    padding: 2rem 2.5rem;
-    overflow-y: auto;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
+.tt-topbar {
+    height: 64px;
+    border-bottom: 1px solid hsl(var(--border));
+    background-color: hsl(var(--background));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
-/* ==========================================================================
-   4. COMPONENTS — Card
-   ========================================================================== */
+.tt-content {
+    padding: 32px;
+    flex: 1;
+    overflow-y: auto;
+}
 
-.card {
+/* --- 4. COMPONENTES --- */
+/* Cards */
+.tt-card {
     background-color: hsl(var(--card));
-    color: hsl(var(--card-foreground));
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
 }
 
-.card-padded {
-    padding: 1.5rem;
+.tt-card__header {
+    padding: 24px 24px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-
-/* ==========================================================================
-   5. COMPONENTS — Dashboard Cards
-   ========================================================================== */
-
-.page-title {
-    margin-bottom: 1.5rem;
+.tt-card__title {
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-}
-
-.dashboard-card {
-    padding: 1.5rem;
-    transition: box-shadow 0.15s ease;
-}
-
-.dashboard-card:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.dashboard-card h3 {
-    font-size: 0.75rem;
-    font-weight: 500;
+.tt-card__desc {
+    font-size: 14px;
     color: hsl(var(--muted-foreground));
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
-    line-height: 1;
 }
 
-.card-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: hsl(var(--foreground));
-    line-height: 1;
-    letter-spacing: -0.025em;
+.tt-card__content {
+    padding: 24px;
 }
 
+.tt-card__footer {
+    padding: 0 24px 24px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
 
-/* ==========================================================================
-   6. COMPONENTS — Button
-   Variants: primary (default), secondary, outline, ghost, destructive, warning-sm
-   ========================================================================== */
-
-.btn {
+/* Botões */
+.tt-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1;
-    height: 2.25rem;
-    padding: 0 1rem;
-    border: none;
+    gap: 8px;
+    height: 36px;
+    padding: 0 16px;
     border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.15s ease,
-                color 0.15s ease,
-                border-color 0.15s ease,
-                box-shadow 0.15s ease;
-    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
-.btn:focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
+.tt-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
 }
 
-.btn:disabled {
-    pointer-events: none;
+.tt-btn:disabled {
     opacity: 0.5;
+    cursor: not-allowed;
 }
 
-/* Primary */
-.btn-primary {
+.tt-btn--sm { height: 32px; padding: 0 12px; font-size: 12px; }
+.tt-btn--lg { height: 40px; padding: 0 20px; }
+
+.tt-btn--primary {
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
 }
+.tt-btn--primary:hover:not(:disabled) { background-color: hsl(var(--primary-hover)); }
 
-.btn-primary:hover {
-    background-color: hsl(var(--primary) / 0.9);
-}
-
-/* Secondary */
-.btn-secondary {
+.tt-btn--secondary {
     background-color: hsl(var(--secondary));
     color: hsl(var(--secondary-foreground));
-    border: 1px solid hsl(var(--border));
 }
+.tt-btn--secondary:hover:not(:disabled) { filter: brightness(0.95); }
 
-.btn-secondary:hover {
-    background-color: hsl(var(--accent));
-}
-
-/* Outline (ghost with border) */
-.btn-outline {
+.tt-btn--outline {
     background-color: transparent;
+    border-color: hsl(var(--border));
     color: hsl(var(--foreground));
-    border: 1px solid hsl(var(--border));
 }
+.tt-btn--outline:hover:not(:disabled) { background-color: hsl(var(--secondary)); }
 
-.btn-outline:hover {
-    background-color: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
-}
-
-/* Ghost */
-.btn-ghost {
+.tt-btn--ghost {
     background-color: transparent;
     color: hsl(var(--foreground));
 }
+.tt-btn--ghost:hover:not(:disabled) { background-color: hsl(var(--secondary)); }
 
-.btn-ghost:hover {
-    background-color: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
-}
-
-/* Destructive */
-.btn-destructive {
+.tt-btn--destructive {
     background-color: hsl(var(--destructive));
     color: hsl(var(--destructive-foreground));
 }
+.tt-btn--destructive:hover:not(:disabled) { filter: brightness(0.9); }
 
-.btn-destructive:hover {
-    background-color: hsl(var(--destructive) / 0.9);
-}
-
-/* Warning (small — used for "Finalizar Tarefa") */
-.btn-warning-sm {
-    height: 1.75rem;
-    padding: 0 0.625rem;
-    font-size: 0.75rem;
-    background-color: hsl(var(--warning));
-    color: hsl(var(--warning-foreground));
-    border: 1px solid hsl(var(--warning-border));
-}
-
-.btn-warning-sm:hover {
-    background-color: hsl(var(--warning) / 0.85);
-}
-
-/* Size modifier — small */
-.btn-sm {
-    height: 1.75rem;
-    padding: 0 0.75rem;
-    font-size: 0.75rem;
-}
-
-/* Width modifier — full */
-.btn-full {
-    width: 100%;
-}
-
-
-/* ==========================================================================
-   7. COMPONENTS — Badge
-   Variants: default, secondary, outline, primary (accent)
-   ========================================================================== */
-
-.badge {
+/* Badges */
+.tt-badge {
     display: inline-flex;
     align-items: center;
-    white-space: nowrap;
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1;
-    height: 1.375rem;
-    padding: 0 0.625rem;
+    padding: 2px 10px;
     border-radius: 9999px;
-    transition: background-color 0.15s ease;
-}
-
-/* Default */
-.badge {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border: 1px solid transparent;
-}
-
-/* Secondary */
-.badge-secondary {
-    background-color: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    border: 1px solid transparent;
-}
-
-/* Outline */
-.badge-outline {
-    background-color: transparent;
-    color: hsl(var(--foreground));
-    border: 1px solid hsl(var(--border));
-}
-
-/* Primary accent (for priority, etc.) */
-.badge-primary {
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border: 1px solid transparent;
-}
-
-
-/* ==========================================================================
-   8. COMPONENTS — Form / Input
-   ========================================================================== */
-
-.form-group {
-    margin-bottom: 1.25rem;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.875rem;
+    font-size: 12px;
     font-weight: 500;
-    margin-bottom: 0.375rem;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.tt-badge--priority-alta { background-color: hsl(var(--destructive) / 0.15); color: hsl(var(--destructive)); }
+.tt-badge--priority-media { background-color: hsl(var(--warning) / 0.15); color: hsl(38 92% 35%); }
+.tt-badge--priority-baixa { background-color: hsl(var(--success) / 0.15); color: hsl(142 71% 30%); }
+
+.dark .tt-badge--priority-media { color: hsl(var(--warning)); }
+.dark .tt-badge--priority-baixa { color: hsl(var(--success)); }
+
+.tt-badge--status-aguardando { background-color: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+.tt-badge--status-em-atendimento { background-color: hsl(var(--info) / 0.15); color: hsl(var(--info)); }
+.tt-badge--status-finalizado { background-color: hsl(var(--success) / 0.15); color: hsl(var(--success)); }
+.tt-badge--status-cancelado { background-color: transparent; border-color: hsl(var(--destructive)); color: hsl(var(--destructive)); }
+.tt-badge--status-reaberto { background-color: hsl(var(--warning) / 0.15); color: hsl(38 92% 35%); }
+.dark .tt-badge--status-reaberto { color: hsl(var(--warning)); }
+
+/* Inputs e Forms */
+.tt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.tt-label {
+    font-size: 14px;
+    font-weight: 500;
     color: hsl(var(--foreground));
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-family: inherit;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: hsl(var(--foreground));
-    background-color: hsl(var(--background));
+.tt-input, .tt-select, .tt-textarea {
+    min-height: 36px;
+    padding: 8px 12px;
+    background-color: transparent;
     border: 1px solid hsl(var(--input));
     border-radius: var(--radius);
-    transition: border-color 0.15s ease,
-                box-shadow 0.15s ease;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: hsl(var(--muted-foreground));
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: hsl(var(--ring));
-    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 5rem;
-}
-
-.form-hint {
-    font-size: 0.8125rem;
-    color: hsl(var(--muted-foreground));
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
-}
-
-
-/* ==========================================================================
-   9. COMPONENTS — Toast / Flash Messages
-   ========================================================================== */
-
-.toast-container {
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.toast-message {
-    min-width: 280px;
-    max-width: 350px;
-    padding: 0.875rem 1rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-md);
-    font-size: 0.875rem;
-    font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    animation: slideInRight 0.3s ease forwards;
-}
-
-.toast-success {
-    border-left: 4px solid hsl(var(--toast-success-border));
-    color: hsl(var(--toast-success-fg));
-}
-
-.toast-error {
-    border-left: 4px solid hsl(var(--toast-error-border));
-    color: hsl(var(--toast-error-fg));
-}
-
-.toast-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: hsl(var(--muted-foreground));
-    font-size: 1.125rem;
-    font-weight: 700;
-    padding: 0;
-    margin-left: 0.75rem;
-    line-height: 1;
-    transition: color 0.15s ease;
-}
-
-.toast-close:hover {
+    font-size: 14px;
     color: hsl(var(--foreground));
-}
-
-@keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to   { transform: translateX(0);    opacity: 1; }
-}
-
-@keyframes slideOutRight {
-    from { transform: translateX(0);    opacity: 1; }
-    to   { transform: translateX(100%); opacity: 0; }
-}
-
-
-/* ==========================================================================
-   10. COMPONENTS — Ticket Profile
-   ========================================================================== */
-
-.content-narrow {
-    max-width: 640px;
-    margin: 0 auto;
-}
-
-.page-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.page-header h1 {
-    margin: 0;
-}
-
-/* Profile card internals */
-.ticket-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.25rem;
-}
-
-.ticket-meta {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.ticket-meta h2 {
-    margin-top: 0.25rem;
+    font-family: inherit;
+    transition: all 0.2s;
     width: 100%;
 }
 
-.ticket-badges {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: flex-end;
+.tt-textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
-.ticket-description {
-    padding: 1rem;
-    background-color: hsl(var(--muted));
+.tt-input:focus, .tt-select:focus, .tt-textarea:focus {
+    outline: none;
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.2);
+}
+
+.tt-input::placeholder, .tt-textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+}
+
+/* Tabelas */
+.tt-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    margin-bottom: 1.5rem;
+    background-color: hsl(var(--card));
 }
 
-.ticket-description p {
-    font-size: 0.875rem;
-    line-height: 1.7;
+.tt-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tt-table th {
+    background-color: hsl(var(--muted) / 0.5);
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--muted-foreground));
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.tt-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid hsl(var(--border));
+    font-size: 14px;
     color: hsl(var(--foreground));
 }
 
-.section-title {
-    margin-bottom: 0.75rem;
+.tt-table tbody tr:hover {
+    background-color: hsl(var(--muted) / 0.3);
 }
 
+.tt-table tbody tr:last-child td {
+    border-bottom: none;
+}
 
-/* ==========================================================================
-   11. COMPONENTS — Timeline (Worklog History)
-   ========================================================================== */
-
-.timeline {
+/* Toasts */
+.tt-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: 8px;
 }
 
-.timeline-item {
-    border-left: 2px solid hsl(var(--border));
-    padding-left: 1rem;
-    margin-left: 0.5rem;
-}
-
-.timeline-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.25rem;
-}
-
-.timeline-author {
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-
-.timeline-actions {
-    display: flex;
-    gap: 0.625rem;
-    align-items: center;
-}
-
-.timeline-date {
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
-}
-
-.timeline-form {
-    margin: 0;
-}
-
-.timeline-message {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    margin-top: 0.25rem;
-    line-height: 1.5;
-}
-
-.text-empty {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    text-align: center;
-    font-style: italic;
-}
-
-
-/* ==========================================================================
-   12. COMPONENTS — Ranking
-   ========================================================================== */
-
-.ranking-container {
-    max-width: 640px;
-}
-
-.ranking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.ranking-card {
-    padding: 0.875rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.15s ease;
-}
-
-.ranking-card:hover {
-    background-color: hsl(var(--muted));
-}
-
-.ranking-card-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.ranking-position {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: hsl(var(--muted-foreground));
-    min-width: 2rem;
-}
-
-.ranking-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-}
-
-.ranking-name {
-    font-weight: 600;
-    font-size: 0.875rem;
-}
-
-.ranking-workspace {
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
-    font-weight: 400;
-}
-
-.ranking-card-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.ranking-score {
-    font-size: 1.25rem;
-    font-weight: 700;
+.tt-toast {
+    min-width: 320px;
+    max-width: 420px;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    box-shadow: var(--shadow-md);
     color: hsl(var(--foreground));
-    letter-spacing: -0.025em;
+    font-size: 14px;
+    font-weight: 500;
+    animation: toast-in 0.3s ease-out forwards;
 }
 
-.ranking-label {
-    font-size: 0.75rem;
-    color: hsl(var(--muted-foreground));
+.tt-toast--success { border-left: 4px solid hsl(var(--success)); }
+.tt-toast--error { border-left: 4px solid hsl(var(--destructive)); }
+
+@keyframes toast-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
-
-/* ==========================================================================
-   13. COMPONENTS — Ticket List
-   ========================================================================== */
-
-.ticket-list-container {
-    max-width: 640px;
+@keyframes toast-out {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
 }
 
-.ticket-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.tt-toast.closing {
+    animation: toast-out 0.3s ease-in forwards;
 }
 
-.ticket-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
+/* --- 5. UTILITÁRIOS --- */
+.tt-flex { display: flex; }
+.tt-flex-col { display: flex; flex-direction: column; }
+.tt-items-center { align-items: center; }
+.tt-justify-between { justify-content: space-between; }
+.tt-gap-2 { gap: 8px; }
+.tt-gap-4 { gap: 16px; }
+.tt-gap-6 { gap: 24px; }
+.tt-mb-6 { margin-bottom: 24px; }
+.tt-text-muted { color: hsl(var(--muted-foreground)); }
+.tt-text-sm { font-size: 12px; }
+.tt-font-medium { font-weight: 500; }
+.tt-font-bold { font-weight: 700; }
+
+.tt-grid-dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
 }
 
-.ticket-item {
-    padding: 0.875rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.15s ease;
+/* --- 6. RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .tt-app { flex-direction: column; }
+    .tt-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid hsl(var(--border));
+    }
+    .tt-sidebar__nav { flex-direction: row; overflow-x: auto; }
+    .tt-grid-dashboard { grid-template-columns: repeat(2, 1fr); }
+    .tt-content { padding: 16px; }
 }
 
-.ticket-item:hover {
-    background-color: hsl(var(--muted));
+@media (max-width: 480px) {
+    .tt-grid-dashboard { grid-template-columns: 1fr; }
 }
-
-.ticket-item-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.ticket-item-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.ticket-id {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    font-variant-numeric: tabular-nums;
-}
-
-
-/* ==========================================================================
-   14. UTILITIES
-   Minimal helper classes — only when semantically justified.
-   ========================================================================== */
-
-.mb-0  { margin-bottom: 0; }
-.mb-sm { margin-bottom: 0.5rem; }
-.mb-md { margin-bottom: 1rem; }
-.mb-lg { margin-bottom: 1.5rem; }
-.mb-xl { margin-bottom: 2rem; }

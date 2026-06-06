@@ -1,40 +1,41 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<div class="ranking-container">
-    <h1 class="page-title">Ranking de Técnicos</h1>
+<div class="tt-mb-6">
+    <h1>Ranking de Técnicos</h1>
+    <p class="tt-text-muted">Métricas de resolução e tickets atendidos.</p>
+</div>
 
-    <div class="ranking-list">
-        {% for tecnico in ranking %}
-        <div class="card ranking-card">
-
-            <div class="ranking-card-left">
-                <span class="ranking-position">
-                    #{{ loop.index }}
-                </span>
-
-                <div class="ranking-info">
-                    <span class="ranking-name">
-                        {{ tecnico.name }}
-                    </span>
-                    {% if tecnico.workspace_names %}
-                    <span class="ranking-workspace">
-                        {{ tecnico.workspace_names }}
-                    </span>
+<div class="tt-table-wrapper" style="max-width: 800px;">
+    <table class="tt-table">
+        <thead>
+            <tr>
+                <th style="width: 60px; text-align: center;">Posição</th>
+                <th>Técnico</th>
+                <th>Workspaces Atuantes</th>
+                <th style="text-align: right;">Tickets Atendidos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in ranking %}
+            <tr>
+                <td style="text-align: center;">
+                    {% if loop.index <= 3 %}
+                        <span class="tt-badge tt-badge--status-finalizado" style="padding: 2px 8px;">#{{ loop.index }}</span>
+                    {% else %}
+                        <span class="tt-text-muted">#{{ loop.index }}</span>
                     {% endif %}
-                </div>
-            </div>
-
-            <div class="ranking-card-right">
-                <span class="ranking-label">
-                    Finalizados
-                </span>
-                <span class="ranking-score">
-                    {{ tecnico.worklogs_count }}
-                </span>
-            </div>
-
-        </div>
-        {% endfor %}
-    </div>
+                </td>
+                <td class="tt-font-medium">{{ item.name }}</td>
+                <td class="tt-text-sm tt-text-muted">{{ item.workspace_names }}</td>
+                <td style="text-align: right;" class="tt-font-bold">{{ item.worklogs_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum técnico encontrado no ranking.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -1,22 +1,60 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<h1 class="page-title">Dashboard do Sistema</h1>
-<div class="grid">
-    <div class="card dashboard-card">
-        <h3>Total de Serviços</h3>
-        <p class="card-value">{{ dashboard.total_tickets }}</p>
+<div class="tt-mb-6">
+    <h1>Dashboard</h1>
+    <p class="tt-text-muted">Visão geral do setor operacional.</p>
+</div>
+
+{% if dashboard %}
+<div class="tt-grid-dashboard tt-mb-6">
+    <!-- Total Tickets -->
+    <div class="tt-card">
+        <div class="tt-card__content tt-flex-col tt-gap-2">
+            <div class="tt-flex tt-justify-between tt-items-center">
+                <span class="tt-text-sm tt-text-muted tt-font-medium uppercase">Total de Tickets</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10"/><path d="M7 12h10"/><path d="M7 17h10"/></svg>
+            </div>
+            <span class="tt-font-bold" style="font-size: 24px;">{{ dashboard.total_tickets }}</span>
+        </div>
     </div>
-    <div class="card dashboard-card">
-        <h3>Abertos</h3>
-        <p class="card-value">{{ dashboard.open_tickets }}</p>
+
+    <!-- Open Tickets -->
+    <div class="tt-card">
+        <div class="tt-card__content tt-flex-col tt-gap-2">
+            <div class="tt-flex tt-justify-between tt-items-center">
+                <span class="tt-text-sm tt-text-muted tt-font-medium uppercase">Em Aberto</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <span class="tt-font-bold" style="font-size: 24px;">{{ dashboard.open_tickets }}</span>
+        </div>
     </div>
-    <div class="card dashboard-card">
-        <h3>Finalizados</h3>
-        <p class="card-value">{{ dashboard.finished_tickets }}</p>
+
+    <!-- Finished Tickets -->
+    <div class="tt-card">
+        <div class="tt-card__content tt-flex-col tt-gap-2">
+            <div class="tt-flex tt-justify-between tt-items-center">
+                <span class="tt-text-sm tt-text-muted tt-font-medium uppercase">Finalizados</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <span class="tt-font-bold" style="font-size: 24px;">{{ dashboard.finished_tickets }}</span>
+        </div>
     </div>
-    <div class="card dashboard-card">
-        <h3>Tempo Médio</h3>
-        <p class="card-value">{{ dashboard.avg_worklog_time_hours }}h</p>
+
+    <!-- Avg Worklog Time -->
+    <div class="tt-card">
+        <div class="tt-card__content tt-flex-col tt-gap-2">
+            <div class="tt-flex tt-justify-between tt-items-center">
+                <span class="tt-text-sm tt-text-muted tt-font-medium uppercase">Tempo Médio (h)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <span class="tt-font-bold" style="font-size: 24px;">{{ dashboard.avg_worklog_time_hours }}</span>
+        </div>
     </div>
 </div>
+{% else %}
+<div class="tt-card tt-card__content tt-text-center tt-text-muted">
+    Nenhum dado de dashboard disponível.
+</div>
+{% endif %}
 {% endblock %}

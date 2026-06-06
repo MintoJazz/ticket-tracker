@@ -1,75 +1,116 @@
 {% extends "layout.html" %}
-{% block content %}
-<div class="content-narrow">
 
-    <!-- Header com botão de voltar -->
-    <div class="page-header">
-        <a href="{{ url_for('tickets.lista_servicos') }}" class="btn btn-outline btn-sm">
-            ← Voltar
-        </a>
-        <h1>Detalhes do Serviço</h1>
+{% block content %}
+<div class="tt-mb-6 tt-flex tt-items-center tt-gap-4">
+    <a href="{{ url_for('tickets.lista_servicos') }}" class="tt-btn tt-btn--ghost tt-btn--sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Voltar
+    </a>
+    <h1 style="font-size: 24px;">Ticket #{{ ticket.id }}</h1>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;" class="tt-grid-responsive">
+    
+    <div class="tt-flex-col tt-gap-6">
+        <div class="tt-card">
+            <div class="tt-card__header">
+                <h2 class="tt-card__title">{{ ticket.title }}</h2>
+                <span class="tt-card__desc">Aberto em {{ ticket.created_at }}</span>
+            </div>
+            <div class="tt-card__content">
+                <p>{{ ticket.description }}</p>
+            </div>
+        </div>
+
+        <div class="tt-card">
+            <div class="tt-card__header">
+                <h3 class="tt-card__title">Histórico de Worklogs</h3>
+            </div>
+            <div class="tt-card__content">
+                {% if historico %}
+                    <div class="tt-flex-col tt-gap-4">
+                        {% for log in historico %}
+                        <div style="border-left: 2px solid hsl(var(--border)); padding-left: 16px; margin-left: 8px;">
+                            <div class="tt-flex tt-justify-between tt-items-center">
+                                <span class="tt-font-medium">{{ log.user_name }}</span>
+                                <span class="tt-text-sm tt-text-muted">{{ log.begun_at }}</span>
+                            </div>
+                            <p class="tt-text-sm tt-text-muted tt-mb-2" style="margin-top: 4px;">{{ log.message }}</p>
+                            
+                            {% if log.ended_at %}
+                                <span class="tt-text-sm" style="color: hsl(var(--success));">Finalizado em {{ log.ended_at }}</span>
+                            {% else %}
+                                <form action="{{ url_for('worklogs.encerrar', log_id=log.id) }}" method="POST" style="margin-top: 8px;">
+                                    <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
+                                    <button type="submit" class="tt-btn tt-btn--secondary tt-btn--sm">Encerrar Atendimento</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="tt-text-muted tt-text-sm">Nenhum worklog registrado ainda.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 
-    <div class="card card-padded mb-lg">
-        <div class="ticket-header">
-            <div class="ticket-meta">
-                <span>Ticket #{{ ticket.id }}</span>
-                <span class="badge badge-secondary">{{ ticket.workspace_name }}</span>
-                <h2>{{ ticket.title }}</h2>
-            </div>
-
-            <!-- Badges de status e prioridade -->
-            <div class="ticket-badges">
-                <span class="badge badge-outline">
-                    Status: {{ ticket.status }}
-                </span>
-                <span class="badge badge-primary">
-                    Prioridade: {{ prioridade }}
-                </span>
-            </div>
-        </div>
-
-        <div class="ticket-description">
-            <p>{{ ticket.description }}</p>
-        </div>
-
-        <!-- Seção do Histórico -->
-        <h3 class="section-title">Histórico de Atendimento</h3>
-        <div class="timeline">
-            {% for log in historico %}
-            <div class="timeline-item">
-                <div class="timeline-row">
-                    <span class="timeline-author">{{ log.user_name }}</span>
-
-                    <div class="timeline-actions">
-                        <span class="timeline-date">
-                            {{ log.begun_at.strftime('%d/%m/%Y às %H:%M') if log.begun_at else '' }}
-                            {% if log.ended_at %} - Finalizado {% endif %}
-                        </span>
-
-                        {% if not log.ended_at %}
-                        <form action="{{ url_for('worklogs.encerrar', log_id=log.id) }}" method="POST"
-                            class="timeline-form">
-                            <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
-                            <button type="submit" class="btn btn-warning-sm">
-                                Finalizar Tarefa
-                            </button>
-                        </form>
+    <div class="tt-flex-col tt-gap-6">
+        <div class="tt-card">
+            <div class="tt-card__content tt-flex-col tt-gap-4">
+                <div class="tt-flex-col tt-gap-2">
+                    <span class="tt-label">Status</span>
+                    <div>
+                        {% if ticket.status == 'FINALIZADO' %}
+                            <span class="tt-badge tt-badge--status-finalizado">{{ ticket.status }}</span>
+                        {% elif ticket.status == 'CANCELADO' %}
+                            <span class="tt-badge tt-badge--status-cancelado">{{ ticket.status }}</span>
+                        {% elif ticket.status == 'EM ATENDIMENTO' %}
+                            <span class="tt-badge tt-badge--status-em-atendimento">{{ ticket.status }}</span>
+                        {% elif ticket.status == 'AGUARDANDO ATENDIMENTO' %}
+                            <span class="tt-badge tt-badge--status-aguardando">{{ ticket.status }}</span>
+                        {% elif ticket.status == 'SERVIÇO REABERTO' %}
+                            <span class="tt-badge tt-badge--status-reaberto">{{ ticket.status }}</span>
+                        {% else %}
+                            <span class="tt-badge">{{ ticket.status }}</span>
                         {% endif %}
                     </div>
                 </div>
-                <p class="timeline-message">{{ log.message }}</p>
-            </div>
-            {% else %}
-            <p class="text-empty">
-                Nenhum worklog registrado ainda.
-            </p>
-            {% endfor %}
-        </div>
 
-        <a href="{{ url_for('worklogs.exibir_form', ticket_id=ticket.id) }}" class="btn btn-primary btn-full">
-            + Adicionar Worklog
-        </a>
+                <div class="tt-flex-col tt-gap-2">
+                    <span class="tt-label">Prioridade</span>
+                    <div>
+                        {% if prioridade == 'Alta' %}
+                            <span class="tt-badge tt-badge--priority-alta">Alta</span>
+                        {% elif prioridade == 'Média' %}
+                            <span class="tt-badge tt-badge--priority-media">Média</span>
+                        {% elif prioridade == 'Baixa' %}
+                            <span class="tt-badge tt-badge--priority-baixa">Baixa</span>
+                        {% else %}
+                            <span class="tt-badge">{{ prioridade }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="tt-flex-col tt-gap-2">
+                    <span class="tt-label">Workspace</span>
+                    <span class="tt-text-sm">{{ ticket.workspace_name }}</span>
+                </div>
+            </div>
+            
+            <div class="tt-card__footer">
+                <a href="{{ url_for('worklogs.exibir_form', ticket_id=ticket.id) }}" class="tt-btn tt-btn--primary" style="width: 100%;">
+                    Registrar Worklog
+                </a>
+            </div>
+        </div>
     </div>
+
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        .tt-grid-responsive { grid-template-columns: 1fr !important; }
+    }
+</style>
 {% endblock %}
