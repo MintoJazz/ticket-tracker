@@ -13,29 +13,26 @@ CREATE OR REPLACE FUNCTION get_worklog_time(p_begin TIMESTAMP, p_end TIMESTAMP) 
     SELECT (EXTRACT(EPOCH FROM (p_end - p_begin)) / 3600.0)::NUMERIC;
 $$ LANGUAGE sql;
 
---> Ranking de técnicos por tipo de chamado
-CREATE OR REPLACE FUNCTION get_ranking_tecnicos() RETURNS TABLE(
+--> Ranking de técnicos por tipo de chamado (filtrado por workspace)
+CREATE OR REPLACE FUNCTION get_ranking_tecnicos(p_workspace_id INT) RETURNS TABLE(
     name VARCHAR,
-    worklogs_count BIGINT,
-    workspace_names TEXT
+    worklogs_count BIGINT
 ) AS $$
-    SELECT u.name, COALESCE(t.count, 0) as worklogs_count,
-        COALESCE(string_agg(DISTINCT ws.name, ', ' ORDER BY ws.name), '') as workspace_names
+    SELECT u.name, COALESCE(t.count, 0) as worklogs_count
     FROM users u 
     LEFT JOIN (
-        SELECT user_id, COUNT(DISTINCT ticket_id) as count  
-        FROM worklogs  
-        GROUP BY user_id
+        SELECT w.user_id, COUNT(DISTINCT w.ticket_id) as count  
+        FROM worklogs w
+        JOIN tickets tk ON w.ticket_id = tk.id
+        WHERE tk.workspace_id = p_workspace_id
+        GROUP BY w.user_id
     ) t ON u.id = t.user_id 
-    LEFT JOIN workspace_users wu ON u.id = wu.user_id
-    LEFT JOIN workspaces ws ON wu.workspace_id = ws.id
-    WHERE u.id IN (SELECT user_id FROM workspace_users WHERE role = 'TECNICO')
-    GROUP BY u.id, u.name, t.count
+    WHERE u.id IN (SELECT user_id FROM workspace_users WHERE role = 'TECNICO' AND workspace_id = p_workspace_id)
     ORDER BY worklogs_count DESC;
 $$ LANGUAGE sql;
 
---> Função do Dashboard
-CREATE OR REPLACE FUNCTION get_dashboard() RETURNS TABLE (
+--> Função do Dashboard (filtrada por workspace)
+CREATE OR REPLACE FUNCTION get_dashboard(p_workspace_id INT) RETURNS TABLE (
     workspace_id INT,
     workspace_name VARCHAR,
     total_tickets BIGINT, 
@@ -59,6 +56,7 @@ BEGIN
         FROM worklogs 
         GROUP BY ticket_id
     ) max_min ON t.id = max_min.ticket_id
+    WHERE ws.id = p_workspace_id
     GROUP BY ws.id, ws.name
     ORDER BY ws.id;
 END; 
