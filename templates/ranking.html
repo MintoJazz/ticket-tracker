@@ -12,7 +12,6 @@
             <tr>
                 <th style="width: 60px; text-align: center;">Posição</th>
                 <th>Técnico</th>
-                <th>Workspaces Atuantes</th>
                 <th style="text-align: right;">Tickets Atendidos</th>
             </tr>
         </thead>
@@ -27,12 +26,11 @@
                     {% endif %}
                 </td>
                 <td class="tt-font-medium">{{ item.name }}</td>
-                <td class="tt-text-sm tt-text-muted">{{ item.workspace_names }}</td>
                 <td style="text-align: right;" class="tt-font-bold">{{ item.worklogs_count }}</td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="4" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum técnico encontrado no ranking.</td>
+                <td colspan="3" class="tt-text-muted" style="text-align: center; padding: 24px;">Nenhum técnico encontrado no ranking.</td>
             </tr>
             {% endfor %}
         </tbody>
