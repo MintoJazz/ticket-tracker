@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, session
 from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 
@@ -9,15 +9,13 @@ bp = Blueprint('tickets', __name__)
 
 @bp.route('/')
 def lista_servicos():
+    if 'workspace_id' not in session:
+        return jsonify({"error": "workspace_id não definido na sessão. Selecione um workspace primeiro."}), 401
+
     with connect(DB_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute("""
-                SELECT t.*, ws.name as workspace_name 
-                FROM tickets t
-                LEFT JOIN workspaces ws ON t.workspace_id = ws.id
-                ORDER BY t.id
-            """)
-            todos_tickets = cursor.fetchall()
+        ticketDAO = DAO('tickets')
+        todos_tickets = ticketDAO.select_many_by_key(connection, 'workspace_id', session['workspace_id'])
+        
     return jsonify({"tickets": todos_tickets})
 
 @bp.route('/<int:ticket_id>')

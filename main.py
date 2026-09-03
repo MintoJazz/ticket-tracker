@@ -4,6 +4,7 @@ from routes.dashboard import bp as dashboard_bp
 from routes.ranking import bp as ranking_bp
 from routes.tickets import bp as tickets_bp
 from routes.worklogs import bp as worklogs_bp
+from routes.workspaces import bp as workspaces_bp
 from database.migrator.commands import db_cli
 
 app = Flask(__name__)
@@ -13,5 +14,6 @@ app.register_blueprint(dashboard_bp)
 app.register_blueprint(ranking_bp)
 app.register_blueprint(tickets_bp, url_prefix='/servicos')
 app.register_blueprint(worklogs_bp, url_prefix='/worklogs')
+app.register_blueprint(workspaces_bp)
 
 app.cli.add_command(db_cli)
