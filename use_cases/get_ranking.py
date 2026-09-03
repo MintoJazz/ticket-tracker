@@ -7,8 +7,8 @@ def get_ranking(workspace_id):
     try:
         with connect(DB_URL) as connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-                query = sql.SQL("SELECT * FROM get_ranking_tecnicos(%s)")
-                cursor.execute(query, (workspace_id,))
+                query = sql.SQL("SELECT * FROM get_ranking_tecnicos()")
+                cursor.execute(query)
                 ranking = cursor.fetchall()
         
         return Result.success({"ranking": ranking})

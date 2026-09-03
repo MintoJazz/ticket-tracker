@@ -9,7 +9,7 @@ def get_dashboard_data(workspace_id):
         payload = {}
         with connect(DB_URL) as connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-                query = sql.SQL("SELECT * FROM get_dashboard(%s)")
+                query = sql.SQL("SELECT * FROM get_dashboard() WHERE workspace_id = %s")
                 cursor.execute(query, (workspace_id,))
                 payload['dashboard'] = cursor.fetchall()
 
