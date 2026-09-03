@@ -1,9 +1,6 @@
 from flask import Blueprint, jsonify, session
-from psycopg2 import connect
-from psycopg2.extras import RealDictCursor
-
-from config import DB_URL
-from persistencias import DAO
+from use_cases.list_workspace_tickets import list_workspace_tickets
+from use_cases.get_ticket_details import get_ticket_details
 
 bp = Blueprint('tickets', __name__)
 
@@ -12,40 +9,16 @@ def lista_servicos():
     if 'workspace_id' not in session:
         return jsonify({"error": "workspace_id não definido na sessão. Selecione um workspace primeiro."}), 401
 
-    with connect(DB_URL) as connection:
-        ticketDAO = DAO('tickets')
-        todos_tickets = ticketDAO.select_many_by_key(connection, 'workspace_id', session['workspace_id'])
+    result = list_workspace_tickets(session['workspace_id'])
+    if not result.is_success:
+        return jsonify({"error": result.error}), result.status_code
         
-    return jsonify({"tickets": todos_tickets})
+    return jsonify(result.value), result.status_code
 
 @bp.route('/<int:ticket_id>')
 def perfil_servico(ticket_id):
-    with connect(DB_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute("""
-                SELECT t.*, ws.name as workspace_name 
-                FROM tickets t
-                LEFT JOIN workspaces ws ON t.workspace_id = ws.id
-                WHERE t.id = %s
-            """, (ticket_id,))
-            ticket = cursor.fetchone()
-
-        if not ticket: 
-            return jsonify({"error": "Ticket não encontrado."}), 404
-            
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT get_prioridade(%s)", (ticket_id,))
-            resultado = cursor.fetchone()
-            prioridade = resultado[0] if resultado else 'Não Definida'
-            
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute("""
-                SELECT w.*, u.name as user_name 
-                FROM worklogs w 
-                JOIN users u ON w.user_id = u.id 
-                WHERE w.ticket_id = %s 
-                ORDER BY w.begun_at DESC
-            """, (ticket_id,))
-            historico = cursor.fetchall()
-            
-    return jsonify({"ticket": ticket, "prioridade": prioridade, "historico": historico})
+    result = get_ticket_details(ticket_id)
+    if not result.is_success:
+        return jsonify({"error": result.error}), result.status_code
+        
+    return jsonify(result.value), result.status_code

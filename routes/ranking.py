@@ -1,8 +1,5 @@
 from flask import Blueprint, jsonify, session
-from psycopg2 import connect, sql
-from psycopg2.extras import RealDictCursor
-
-from config import DB_URL
+from use_cases.get_ranking import get_ranking
 
 bp = Blueprint('ranking', __name__)
 
@@ -12,13 +9,9 @@ def ranking():
         return jsonify({"error": "workspace_id não definido na sessão. Selecione um workspace primeiro."}), 401
 
     workspace_id = session['workspace_id']
-    payload = {}
-
-    with connect(DB_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = sql.SQL("SELECT * FROM get_ranking_tecnicos(%s)")
-            cursor.execute(query, (workspace_id,))
-
-            payload['ranking'] = cursor.fetchall()
+    
+    result = get_ranking(workspace_id)
+    if not result.is_success:
+        return jsonify({"error": result.error}), result.status_code
         
-    return jsonify(payload)
+    return jsonify(result.value), result.status_code

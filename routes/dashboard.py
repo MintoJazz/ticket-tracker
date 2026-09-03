@@ -1,9 +1,5 @@
 from flask import Blueprint, jsonify, session
-from psycopg2 import connect, sql
-from psycopg2.extras import RealDictCursor
-
-from config import DB_URL
-from persistencias import DAO
+from use_cases.get_dashboard_data import get_dashboard_data
 
 bp = Blueprint('dashboard', __name__)
 
@@ -13,16 +9,9 @@ def dashboard():
         return jsonify({"error": "workspace_id não definido na sessão. Selecione um workspace primeiro."}), 401
 
     workspace_id = session['workspace_id']
-    payload = {}
-
-    with connect(DB_URL) as connection:
-        with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = sql.SQL("SELECT * FROM get_dashboard(%s)")
-            cursor.execute(query, (workspace_id,))
-
-            payload['dashboard'] = cursor.fetchall()
-
-        worklogDAO = DAO('worklogs')
-        payload['worklogs'] = worklogDAO.select_all(connection=connection)
-
-    return jsonify(payload)
+    
+    result = get_dashboard_data(workspace_id)
+    if not result.is_success:
+        return jsonify({"error": result.error}), result.status_code
+        
+    return jsonify(result.value), result.status_code
