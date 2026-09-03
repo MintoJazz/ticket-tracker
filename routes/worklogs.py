@@ -1,34 +1,23 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from use_cases.get_worklog_form_data import get_worklog_form_data
 from use_cases.create_worklog import create_worklog
 from use_cases.close_worklog import close_worklog
+from middlewares import jsonify_result, validate_payload
 
 bp = Blueprint('worklogs', __name__)
 
 @bp.route('/<int:ticket_id>/novo', methods=['GET'])
+@jsonify_result
 def exibir_form(ticket_id):
-    result = get_worklog_form_data(ticket_id)
-    if not result.is_success:
-        return jsonify({"error": result.error}), result.status_code
-        
-    return jsonify(result.value), result.status_code
+    return get_worklog_form_data(ticket_id)
 
 @bp.route('/<int:ticket_id>/novo', methods=['POST'])
-def processar_form(ticket_id):
-    data = request.get_json() or request.form
-    user_id = data.get('user_id')
-    mensagem = data.get('mensagem')
-    
-    result = create_worklog(ticket_id, user_id, mensagem)
-    if not result.is_success:
-        return jsonify({"error": result.error}), result.status_code
-        
-    return jsonify(result.value), result.status_code
+@validate_payload('user_id', 'mensagem')
+@jsonify_result
+def processar_form(ticket_id, user_id, mensagem):
+    return create_worklog(ticket_id, user_id, mensagem)
 
 @bp.route('/<int:log_id>/encerrar', methods=['POST'])
+@jsonify_result
 def encerrar(log_id):
-    result = close_worklog(log_id)
-    if not result.is_success:
-        return jsonify({"error": result.error}), result.status_code
-        
-    return jsonify(result.value), result.status_code
+    return close_worklog(log_id)
